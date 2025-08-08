@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ofoq_kourosh_assessment/gen/assets.gen.dart';
-import 'package:ofoq_kourosh_assessment/src/modules/login/_routes/login_routes.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/auth/_routes/auth_routes.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/splash/_bloc/splash_cubit.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/splash/_bloc/splash_state.dart';
 
@@ -25,7 +25,7 @@ class _SplashPage extends StatelessWidget {
     return BlocListener<SplashCubit, SplashState>(
       listener: (context, state) {
         if (state is SplashFinished) {
-          LoginRoutes.toLoginPage(context);
+          AuthRoutes.toAuthPage(context);
         }
       },
       child: Scaffold(
