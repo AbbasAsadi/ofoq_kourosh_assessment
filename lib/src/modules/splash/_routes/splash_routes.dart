@@ -4,7 +4,11 @@ import 'package:ofoq_kourosh_assessment/src/modules/splash/splash_page.dart';
 
 class SplashRoutes {
   static const splashPagePath = '/splash';
-  static RouteBase route = GoRoute(path: splashPagePath, name: splashPagePath, builder: (_, _) => const SplashPage());
+  static RouteBase route = GoRoute(
+    path: splashPagePath,
+    name: splashPagePath,
+    builder: (_, _) => const SplashPage(),
+  );
 
   static void pushReplacementSplashPage(BuildContext context) {
     context.go(splashPagePath);
