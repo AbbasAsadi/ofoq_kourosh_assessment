@@ -11,6 +11,38 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsIconsGen {
+  const $AssetsIconsGen();
+
+  /// File path: assets/icons/error_info.svg
+  String get errorInfo => 'assets/icons/error_info.svg';
+
+  /// File path: assets/icons/green_tick.svg
+  String get greenTick => 'assets/icons/green_tick.svg';
+
+  /// File path: assets/icons/info_icon.svg
+  String get infoIcon => 'assets/icons/info_icon.svg';
+
+  /// File path: assets/icons/lock.svg
+  String get lock => 'assets/icons/lock.svg';
+
+  /// File path: assets/icons/login.svg
+  String get login => 'assets/icons/login.svg';
+
+  /// File path: assets/icons/profile.svg
+  String get profile => 'assets/icons/profile.svg';
+
+  /// List of all assets
+  List<String> get values => [
+    errorInfo,
+    greenTick,
+    infoIcon,
+    lock,
+    login,
+    profile,
+  ];
+}
+
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
@@ -28,6 +60,7 @@ class $AssetsImagesGen {
 class Assets {
   const Assets._();
 
+  static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }
 

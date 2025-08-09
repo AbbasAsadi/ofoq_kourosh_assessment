@@ -1,6 +1,23 @@
-part of 'auth_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/auth/_data/entity/user_response.dart';
 
-@immutable
-sealed class AuthState {}
+sealed class AuthState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
-final class AuthInitial extends AuthState {}
+class AuthInitial extends AuthState {}
+
+class AuthLoading extends AuthState {}
+
+class AuthSuccess extends AuthState {
+  final UserResponse? user;
+
+  AuthSuccess({this.user});
+}
+
+class AuthFailure extends AuthState {
+  final String error;
+
+  AuthFailure({required this.error});
+}

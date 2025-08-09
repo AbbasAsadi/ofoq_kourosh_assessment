@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ofoq_kourosh_assessment/gen/fonts.gen.dart';
 import 'package:ofoq_kourosh_assessment/src/theme/app_colors.dart';
 
@@ -13,12 +14,21 @@ mixin AppTheme {
     colorSchemeSeed: AppColors.primary,
     scaffoldBackgroundColor: AppColors.white,
     textTheme: defaultTextTheme,
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppColors.white,
+      surfaceTintColor: Colors.transparent,
+      titleTextStyle: defaultTextTheme.headlineLarge,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: AppColors.white,
+      ),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       border: inputBorder,
       disabledBorder: inputBorder,
       enabledBorder: inputBorder,
       focusedBorder: inputBorder,
-      filled: false,
+      filled: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       hintStyle: defaultTextTheme.titleMedium!.copyWith(
         fontWeight: FontWeight.w400,
