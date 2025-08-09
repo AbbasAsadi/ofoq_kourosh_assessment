@@ -33,7 +33,9 @@ class _AppState extends State<App> {
         systemNavigationBarColor:
             AppColors.white, // Scaffold BackgroundColor from theme
       ),
-    )return MaterialApp.router(
+    );
+
+    return MaterialApp.router(
       routerDelegate: _router.routerDelegate,
       routeInformationParser: _router.routeInformationParser,
       routeInformationProvider: _router.routeInformationProvider,
@@ -46,9 +48,7 @@ class _AppState extends State<App> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        Locale('fa'),
-      ],
+      supportedLocales: [Locale('fa')],
       // locale: Locale('fa'),
       // supportedLocales: [Locale('fa')],
       // locale: context.watch<LocaleProvider>().locale,
