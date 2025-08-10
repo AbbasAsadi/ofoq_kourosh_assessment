@@ -10,7 +10,7 @@ class AuthRemoteSource extends AuthSource {
 
   @override
   Future<ApiResponseWrapper> login(LoginParams params) {
-    return _api.call(
+    return _api.call<List>(
       'User',
       method: ApiMethod.get,
       queryParameters: params.toJson(),
@@ -19,6 +19,7 @@ class AuthRemoteSource extends AuthSource {
 
   @override
   Future<ApiResponseWrapper> signup(SignupParams params) {
-    return _api.call('User', method: ApiMethod.post, body: params.toJson());
+    return _api.call<String>(
+        'User', method: ApiMethod.post, body: params.toJson());
   }
 }

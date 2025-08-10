@@ -32,6 +32,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/profile.svg
   String get profile => 'assets/icons/profile.svg';
 
+  /// File path: assets/icons/tick-square.svg
+  String get tickSquare => 'assets/icons/tick-square.svg';
+
   /// List of all assets
   List<String> get values => [
     errorInfo,
@@ -40,6 +43,7 @@ class $AssetsIconsGen {
     lock,
     login,
     profile,
+    tickSquare,
   ];
 }
 

@@ -34,7 +34,7 @@ class CoreApi {
   }
 
   /// Request method
-  Future<ApiResponseWrapper<List?>> call(
+  Future<ApiResponseWrapper<T?>> call<T>(
     String path, {
     required ApiMethod method,
     Map<String, dynamic>? queryParameters,

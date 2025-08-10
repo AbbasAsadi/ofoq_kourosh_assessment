@@ -30,10 +30,17 @@ class DioInterceptors extends Interceptor {
       response.data = ApiResponseWrapper<Map<String, dynamic>?>.serverError;
     } else {
       if (isOk(response.statusCode)) {
-        response.data = ApiResponseWrapper<List<dynamic>?>.success(
-          response.data,
+        if (response.data is List<dynamic>?) {
+          response.data = ApiResponseWrapper<List<dynamic>?>.success(
+            response.data,
           responseHeader: response.headers.map,
         );
+        } else {
+          response.data = ApiResponseWrapper<String?>.success(
+            response.data,
+            responseHeader: response.headers.map,
+          );
+        }
       } else if (response.statusCode == 401) {
         await locator<SecureStorage>().logout();
         response.data = ApiResponseWrapper.unauthorized();

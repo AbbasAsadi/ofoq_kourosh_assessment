@@ -36,11 +36,14 @@ class _AuthPageState extends State<_AuthPage> with ErrorHandler {
   final GlobalKey<FormState> formKey = GlobalKey();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  bool isRegisterUI = false;
 
   @override
   void dispose() {
     usernameController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -49,14 +52,25 @@ class _AuthPageState extends State<_AuthPage> with ErrorHandler {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          showSuccessMessage(context, 'خوش آمدید');
+          if (isRegisterUI) {
+            showSuccessMessage(context, 'کاربر با موفقیت ساخته شد');
+            confirmPasswordController.clear();
+            setState(() {
+              isRegisterUI = false;
+            });
+          } else {
+            showSuccessMessage(context, 'خوش آمدید');
+          }
         } else if (state is AuthFailure) {
           showError(context: context, message: state.error);
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('ورود', style: context.textTheme.bodyMedium),
+          title: Text(
+            isRegisterUI ? 'ثبت نام' : 'ورود',
+            style: context.textTheme.bodyMedium,
+          ),
           centerTitle: true,
         ),
         body: SafeArea(
@@ -66,88 +80,151 @@ class _AuthPageState extends State<_AuthPage> with ErrorHandler {
               padding: const EdgeInsets.all(24.0),
               child: Form(
                 key: formKey,
-                child: Column(
-                  children: [
-                    Gap(80),
-                    Text('خوش آمدید', style: context.textTheme.titleLarge),
-                    Gap(32),
-                    Image.asset(Assets.images.logo.path),
-                    Spacer(),
-                    AppTextField(
-                      controller: usernameController,
-                      hintText: 'نام کاربری',
-                      prefixIcon: SvgPicture.asset(Assets.icons.profile),
-                      maxLines: 1,
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      validator: AppValidator.globalValidator,
-                    ),
-                    Gap(24),
-                    AppTextField(
-                      controller: passwordController,
-                      hintText: 'رمزعبور',
-                      keyboardType: TextInputType.text,
-                      prefixIcon: SvgPicture.asset(Assets.icons.lock),
-                      maxLines: 1,
-                      obscureText: true,
-                      validator: AppValidator.globalValidator,
-                    ),
-                    Gap(24),
-                    BlocSelector<AuthBloc, AuthState, bool>(
-                      selector: (state) => state is AuthLoading,
-                      builder: (context, isLoading) {
-                        return SubmitButton(
-                          isLoading: isLoading,
-                          onTap: () {
-                            if (formKey.currentState?.validate() ?? false) {
-                              String username = usernameController.text;
-                              String password = passwordController.text;
-                              context.read<AuthBloc>().add(
-                                LoginRequestEvent(
-                                  username: username,
-                                  password: password,
-                                ),
-                              );
-                            }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'ورود',
-                                style: context.textTheme.titleMedium?.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Gap(8),
-                              SvgPicture.asset(Assets.icons.login),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    Gap(60),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'حساب کاربری ندارید؟',
-                          style: context.textTheme.labelMedium?.copyWith(
-                            color: AppColors.textDark,
-                          ),
+                child: AnimatedSize(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+
+                  child: Column(
+                    children: [
+                      Gap(80),
+                      Text('خوش آمدید', style: context.textTheme.titleLarge),
+                      Gap(32),
+                      Image.asset(Assets.images.logo.path),
+                      Spacer(),
+                      AppTextField(
+                        controller: usernameController,
+                        hintText: 'نام کاربری',
+                        prefixIcon: SvgPicture.asset(Assets.icons.profile),
+                        maxLines: 1,
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        validator: AppValidator.usernameValidator,
+                      ),
+                      Gap(24),
+                      AppTextField(
+                        controller: passwordController,
+                        hintText: 'رمزعبور',
+                        keyboardType: TextInputType.text,
+                        prefixIcon: SvgPicture.asset(Assets.icons.lock),
+                        maxLines: 1,
+                        obscureText: true,
+                        textInputAction: isRegisterUI
+                            ? TextInputAction.next
+                            : null,
+                        validator: (value) => isRegisterUI
+                            ? AppValidator.registerPasswordValidator(
+                                value,
+                                confirmPasswordController.text,
+                              )
+                            : AppValidator.loginPasswordValidator(value),
+                      ),
+                      AnimatedSwitcher(
+                        duration: Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) => SizeTransition(
+                          sizeFactor: animation,
+                          axisAlignment: -1,
+                          child: child,
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'ثبت نام',
+                        child: isRegisterUI
+                            ? Column(
+                                children: [
+                                  Gap(24),
+                                  AppTextField(
+                                    controller: confirmPasswordController,
+                                    hintText: 'تکرار رمزعبور',
+                                    keyboardType: TextInputType.text,
+                                    prefixIcon: SvgPicture.asset(
+                                      Assets.icons.lock,
+                                    ),
+                                    maxLines: 1,
+                                    obscureText: true,
+                                    validator: (value) =>
+                                        AppValidator.registerPasswordValidator(
+                                          value,
+                                          passwordController.text,
+                                        ),
+                                  ),
+                                ],
+                              )
+                            : SizedBox(),
+                      ),
+                      Gap(24),
+                      BlocSelector<AuthBloc, AuthState, bool>(
+                        selector: (state) => state is AuthLoading,
+                        builder: (context, isLoading) {
+                          return SubmitButton(
+                            isLoading: isLoading,
+                            onTap: () {
+                              if (formKey.currentState?.validate() ?? false) {
+                                String username = usernameController.text;
+                                String password = passwordController.text;
+
+                                if (isRegisterUI) {
+                                  context.read<AuthBloc>().add(
+                                    RegisterRequestEvent(
+                                      username: username,
+                                      password: password,
+                                    ),
+                                  );
+                                } else {
+                                  context.read<AuthBloc>().add(
+                                    LoginRequestEvent(
+                                      username: username,
+                                      password: password,
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  isRegisterUI ? 'ثبت نام' : 'ورود',
+                                  style: context.textTheme.titleMedium
+                                      ?.copyWith(color: Colors.white),
+                                ),
+                                Gap(8),
+                                SvgPicture.asset(
+                                  isRegisterUI
+                                      ? Assets.icons.tickSquare
+                                      : Assets.icons.login,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      Gap(60),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            isRegisterUI
+                                ? 'حساب کاربری دارید؟'
+                                : 'حساب کاربری ندارید؟',
                             style: context.textTheme.labelMedium?.copyWith(
-                              color: AppColors.primary,
+                              color: AppColors.textDark,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          TextButton(
+                            onPressed: () => setState(() {
+                              isRegisterUI = !isRegisterUI;
+                              usernameController.clear();
+                              passwordController.clear();
+                              confirmPasswordController.clear();
+                            }),
+                            child: Text(
+                              isRegisterUI ? 'ورود' : 'ثبت نام',
+                              style: context.textTheme.labelMedium?.copyWith(
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
