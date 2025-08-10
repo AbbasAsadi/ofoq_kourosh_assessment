@@ -14,7 +14,7 @@ class CustomSnackBar extends StatefulWidget {
     this.textStyle = const TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 14,
-      color: AppColors.gray10,
+      color: AppColors.gray20,
     ),
     this.maxLines = 4,
     this.backgroundColor = AppColors.lightGreen,
@@ -30,7 +30,7 @@ class CustomSnackBar extends StatefulWidget {
     this.textStyle = const TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 14,
-      color: AppColors.gray10,
+      color: AppColors.gray20,
     ),
     this.maxLines = 4,
     this.backgroundColor = AppColors.lightOrange,
@@ -46,7 +46,7 @@ class CustomSnackBar extends StatefulWidget {
     this.textStyle = const TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 14,
-      color: AppColors.gray10,
+      color: AppColors.gray20,
     ),
     this.maxLines = 4,
     this.backgroundColor = AppColors.lightRed,

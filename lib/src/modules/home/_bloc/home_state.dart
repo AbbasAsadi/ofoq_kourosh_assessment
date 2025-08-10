@@ -3,17 +3,21 @@ import 'package:ofoq_kourosh_assessment/src/modules/home/_bloc/home_event.dart';
 
 sealed class HomeState {}
 
-class TaskLoading extends HomeState {}
+class TaskLoadingState extends HomeState {}
 
-class TaskListLoadedSuccessfully extends HomeState {
+class TaskListLoadedSuccessfullyState extends HomeState {
   final List<TaskModel> tasks;
 
-  TaskListLoadedSuccessfully({required this.tasks});
+  TaskListLoadedSuccessfullyState({required this.tasks});
 }
 
-class TaskError extends HomeState {
+class TaskErrorState extends HomeState {
   final String error;
   final HomeEvent retryEvent;
 
-  TaskError(this.retryEvent, {required this.error});
+  TaskErrorState(this.retryEvent, {required this.error});
 }
+
+class DeleteTaskLoadingState extends HomeState {}
+
+class DeleteTaskSuccessfullyState extends HomeState {}

@@ -12,7 +12,8 @@ mixin AppColors {
   static const blue = Color(0xFF0049E8);
 
   static const gray5 = Color(0xFF636366);
-  static const gray10 = Color(0xFF3A3B3E);
+  static const gray10 = Color(0xFF555557);
+  static const gray20 = Color(0xFF3A3B3E);
 
   static const border = Color(0xffE8ECF4);
   static const inputBackground = Color(0xffF7F8F9);

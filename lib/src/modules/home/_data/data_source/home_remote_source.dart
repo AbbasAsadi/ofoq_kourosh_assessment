@@ -12,7 +12,16 @@ class HomeRemoteSource extends HomeSource {
     return _api.call<List>(
       'Task',
       method: ApiMethod.get,
-      queryParameters: {"id": "eq.$userID"},
+      queryParameters: {"UserId": "eq.$userID"},
+    );
+  }
+
+  @override
+  Future<ApiResponseWrapper> deleteTask(int taskID) {
+    return _api.call<String>(
+      'Task',
+      method: ApiMethod.delete,
+      queryParameters: {"id": "eq.$taskID"},
     );
   }
 }

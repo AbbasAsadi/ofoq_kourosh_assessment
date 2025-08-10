@@ -7,4 +7,10 @@ class HomeMockSource extends HomeSource {
     // TODO: implement getUserTaskList
     throw UnimplementedError();
   }
+
+  @override
+  Future<ApiResponseWrapper> deleteTask(int taskID) {
+    // TODO: implement deleteTask
+    throw UnimplementedError();
+  }
 }

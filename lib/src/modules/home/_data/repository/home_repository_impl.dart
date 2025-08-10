@@ -28,4 +28,14 @@ class HomeRepositoryImpl extends HomeRepository {
       data: null,
     );
   }
+
+  @override
+  Future<ApiResponseWrapper<bool>> deleteTask(int taskID) async {
+    final response = await remoteSource.deleteTask(taskID);
+    return ApiResponseWrapper(
+      status: response.status,
+      error: response.error,
+      data: response.status == ApiRequestStatus.success,
+    );
+  }
 }
