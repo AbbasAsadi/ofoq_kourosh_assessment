@@ -10,6 +10,7 @@ import 'package:ofoq_kourosh_assessment/src/core/models/task_model.dart';
 import 'package:ofoq_kourosh_assessment/src/helper/context_extensions.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_bloc/home_bloc.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_bloc/home_event.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_routes/task_detail_route.dart';
 import 'package:ofoq_kourosh_assessment/src/theme/app_colors.dart';
 
 class TaskListItem extends StatelessWidget {
@@ -94,7 +95,7 @@ class TaskListItem extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () {
-                    //TODO SHOULD GO TO TASK DETAIL PAGE
+                    TaskDetailRoutes.toTaskDetailPage(context, task: task);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

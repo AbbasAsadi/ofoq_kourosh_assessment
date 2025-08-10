@@ -63,12 +63,12 @@ class SubmitButton extends StatelessWidget {
         ) {
           if (states.contains(WidgetState.focused)) {
             return RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius ?? 8),
+              borderRadius: BorderRadius.circular(radius ?? 12),
               side: const BorderSide(color: Colors.white, width: 2),
             );
           }
           return RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radius ?? 8),
+            borderRadius: BorderRadius.circular(radius ?? 12),
           );
         }),
       ),

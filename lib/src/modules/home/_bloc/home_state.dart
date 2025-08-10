@@ -1,7 +1,11 @@
+import 'package:equatable/equatable.dart';
 import 'package:ofoq_kourosh_assessment/src/core/models/task_model.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_bloc/home_event.dart';
 
-sealed class HomeState {}
+sealed class HomeState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
 class TaskLoadingState extends HomeState {}
 
