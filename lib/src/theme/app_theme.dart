@@ -17,7 +17,7 @@ mixin AppTheme {
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.white,
       surfaceTintColor: Colors.transparent,
-      titleTextStyle: defaultTextTheme.headlineLarge,
+      titleTextStyle: defaultTextTheme.bodyLarge,
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: AppColors.white,

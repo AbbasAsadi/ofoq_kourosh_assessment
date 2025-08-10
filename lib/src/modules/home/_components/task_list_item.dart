@@ -45,11 +45,11 @@ class TaskListItem extends StatelessWidget {
                 Expanded(
                   child: Text(
                     task.taskName ?? 'نامشخص',
+                    textAlign: TextAlign.justify,
                     style: context.textTheme.titleMedium,
                   ),
                 ),
-                Gap(12),
-                Spacer(),
+                Gap(8),
                 Text(
                   'تاریخ :',
                   style: context.textTheme.bodySmall?.copyWith(
@@ -77,6 +77,7 @@ class TaskListItem extends StatelessWidget {
                 Expanded(
                   child: Text(
                     task.taskDesc ?? 'نامشخص',
+                    textAlign: TextAlign.justify,
                     style: context.textTheme.titleMedium,
                   ),
                 ),
