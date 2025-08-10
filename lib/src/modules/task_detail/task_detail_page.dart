@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:ofoq_kourosh_assessment/gen/assets.gen.dart';
 import 'package:ofoq_kourosh_assessment/locator.dart';
 import 'package:ofoq_kourosh_assessment/src/components/app_text_field.dart';
@@ -15,6 +16,7 @@ import 'package:ofoq_kourosh_assessment/src/helper/error_handler.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_bloc/task_detail_bloc.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_bloc/task_detail_event.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_bloc/task_detail_state.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_components/map_widget.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_data/entity/task_params.dart';
 
 class TaskDetailPage extends StatelessWidget {
@@ -48,6 +50,8 @@ class _TaskDetailPageState extends State<_TaskDetailPage> with ErrorHandler {
   final TextEditingController taskDescriptionTextController =
       TextEditingController();
 
+  LatLng? selectedPointer;
+
   @override
   void initState() {
     if (widget.task != null) {
@@ -75,10 +79,7 @@ class _TaskDetailPageState extends State<_TaskDetailPage> with ErrorHandler {
                 ? 'تسک موردنظر با موفقیت ساخته شد'
                 : 'تسک موردنظر با موفقیت ویرایش شد',
           );
-          Future.delayed(
-            Duration(milliseconds: 1500),
-                () => context.pop(true),
-          );
+          Future.delayed(Duration(milliseconds: 1500), () => context.pop(true));
         } else if (state is TaskFailureState) {
           showError(context: context, message: 'خطایی حین عملیات رخ داد');
         }
@@ -126,7 +127,15 @@ class _TaskDetailPageState extends State<_TaskDetailPage> with ErrorHandler {
             Expanded(
               child: Stack(
                 children: [
-                  Container(color: Colors.green),
+                  MapWidget(
+                    initialPoint: LatLng(
+                      double.tryParse(widget.task?.lat ?? '') ?? 35.731072,
+                      double.tryParse(widget.task?.lng ?? '') ?? 51.419256,
+                    ),
+                    onSelectNewLocation: (value) {
+                      selectedPointer = value;
+                    },
+                  ),
                   Positioned(
                     right: 24,
                     left: 24,
@@ -141,7 +150,7 @@ class _TaskDetailPageState extends State<_TaskDetailPage> with ErrorHandler {
                               String description =
                                   taskDescriptionTextController.text;
                               String? userID =
-                              await locator<SecureStorage>().userID;
+                                  await locator<SecureStorage>().userID;
 
                               final task = TaskParams(
                                 id: widget.task?.id,
@@ -149,8 +158,14 @@ class _TaskDetailPageState extends State<_TaskDetailPage> with ErrorHandler {
                                 taskName: title,
                                 taskDesc: description,
                                 userId: userID,
-                                lat: widget.task?.lat ?? "35.54654231",
-                                lng: widget.task?.lng ?? "50.6854987",
+                                lat:
+                                    selectedPointer?.latitude.toString() ??
+                                    widget.task?.lat ??
+                                    "35.54654231",
+                                lng:
+                                    selectedPointer?.longitude.toString() ??
+                                    widget.task?.lng ??
+                                    "50.6854987",
                               );
 
                               if (widget.task == null) {

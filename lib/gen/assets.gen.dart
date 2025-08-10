@@ -38,6 +38,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/login.svg
   String get login => 'assets/icons/login.svg';
 
+  /// File path: assets/icons/map_marker.svg
+  String get mapMarker => 'assets/icons/map_marker.svg';
+
   /// File path: assets/icons/profile.svg
   String get profile => 'assets/icons/profile.svg';
 
@@ -54,6 +57,7 @@ class $AssetsIconsGen {
     location,
     lock,
     login,
+    mapMarker,
     profile,
     tickSquare,
   ];
