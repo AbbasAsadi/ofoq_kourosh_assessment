@@ -5,15 +5,15 @@ import 'package:ofoq_kourosh_assessment/src/modules/home/_data/data_source/home_
 import 'package:ofoq_kourosh_assessment/src/modules/home/_data/repository/home_repository.dart';
 
 class HomeRepositoryImpl extends HomeRepository {
-  final HomeSource remoteSource;
+  final HomeSource source;
 
-  HomeRepositoryImpl({required this.remoteSource});
+  HomeRepositoryImpl({required this.source});
 
   @override
   Future<ApiResponseWrapper<List<TaskModel>?>> getUserTasks(
     String userID,
   ) async {
-    final response = await remoteSource.getUserTaskList(userID);
+    final response = await source.getUserTaskList(userID);
     if (response.status == ApiRequestStatus.success) {
       List<TaskModel> taskList = [];
       (response.data)?.forEach((v) {
@@ -31,7 +31,7 @@ class HomeRepositoryImpl extends HomeRepository {
 
   @override
   Future<ApiResponseWrapper<bool>> deleteTask(int taskID) async {
-    final response = await remoteSource.deleteTask(taskID);
+    final response = await source.deleteTask(taskID);
     return ApiResponseWrapper(
       status: response.status,
       error: response.error,

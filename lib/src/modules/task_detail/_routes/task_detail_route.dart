@@ -11,7 +11,8 @@ class TaskDetailRoutes {
     builder: (_, state) => TaskDetailPage(task: state.extra as TaskModel?),
   );
 
-  static void toTaskDetailPage(BuildContext context, {TaskModel? task}) {
-    context.pushNamed(_taskDetailPagePath, extra: task);
+  static Future<bool?> toTaskDetailPage(BuildContext context,
+      {TaskModel? task}) async {
+    return await context.pushNamed(_taskDetailPagePath, extra: task);
   }
 }

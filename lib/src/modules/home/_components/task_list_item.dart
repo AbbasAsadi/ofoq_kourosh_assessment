@@ -94,8 +94,14 @@ class TaskListItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 TextButton(
-                  onPressed: () {
-                    TaskDetailRoutes.toTaskDetailPage(context, task: task);
+                  onPressed: () async {
+                    var result = await TaskDetailRoutes.toTaskDetailPage(
+                      context,
+                      task: task,
+                    );
+                    if (result == true) {
+                      context.read<HomeBloc>().add(FetchTaskListEvent());
+                    }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -142,74 +148,62 @@ class TaskListItem extends StatelessWidget {
   void showDeleteDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) =>
-          Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            backgroundColor: AppColors.white,
-            insetPadding: EdgeInsets.all(16),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        backgroundColor: AppColors.white,
+        insetPadding: EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
                 children: [
-                  Stack(
-                    children: [
-                      Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'حذف',
-                            style: context.textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                      Positioned(
-                        top: .1,
-                        left: .1,
-                        child: InkWell(
-                          onTap: context.pop,
-                          child: Icon(Icons.close_rounded),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Gap(32),
-                  Text(
-                    'آیا از انجام عملیات اطمینان دارید؟',
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.gray10,
-                    ),
-                  ),
-                  Gap(32),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: SubmitButton(
-                          onTap: () {
-                            context.read<HomeBloc>().add(
-                              DeleteTaskEvent(task.id!),
-                            );
-                            context.pop();
-                          },
-                          label: "تایید",
-                        ),
-                      ),
-                      Gap(16),
-                      Expanded(
-                        child: AppOutlinedButton(
-                          onTap: context.pop,
-                          label: 'لغو',
-                        ),
-                      ),
+                      Text('حذف', style: context.textTheme.bodyMedium),
                     ],
+                  ),
+                  Positioned(
+                    top: .1,
+                    left: .1,
+                    child: InkWell(
+                      onTap: context.pop,
+                      child: Icon(Icons.close_rounded),
+                    ),
                   ),
                 ],
               ),
-            ),
+              Gap(32),
+              Text(
+                'آیا از انجام عملیات اطمینان دارید؟',
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.gray10,
+                ),
+              ),
+              Gap(32),
+              Row(
+                children: [
+                  Expanded(
+                    child: SubmitButton(
+                      onTap: () {
+                        context.read<HomeBloc>().add(DeleteTaskEvent(task.id!));
+                        context.pop();
+                      },
+                      label: "تایید",
+                    ),
+                  ),
+                  Gap(16),
+                  Expanded(
+                    child: AppOutlinedButton(onTap: context.pop, label: 'لغو'),
+                  ),
+                ],
+              ),
+            ],
           ),
+        ),
+      ),
     );
   }
 }

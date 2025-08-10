@@ -14,6 +14,11 @@ import 'package:ofoq_kourosh_assessment/src/modules/home/_data/data_source/home_
 import 'package:ofoq_kourosh_assessment/src/modules/home/_data/data_source/home_source.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_data/repository/home_repository.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_data/repository/home_repository_impl.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_data/data_source/task_detail_data_source.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_data/data_source/task_detail_mock_data_source.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_data/data_source/task_detail_remote_data_source.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_data/repository/task_detail_repository.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_data/repository/task_detail_repository_impl.dart';
 
 final locator = GetIt.instance;
 
@@ -31,16 +36,26 @@ Future<void> initializeDependencies() async {
   if (appFlavor == 'mock') {
     locator.registerLazySingleton<AuthSource>(() => AuthMockSource());
     locator.registerLazySingleton<HomeSource>(() => HomeMockSource());
+    locator.registerLazySingleton<TaskDetailDataSource>(
+      () => TaskDetailMockDataSource(),
+    );
   } else {
     locator.registerLazySingleton<AuthSource>(() => AuthRemoteSource());
     locator.registerLazySingleton<HomeSource>(() => HomeRemoteSource());
+    locator.registerLazySingleton<TaskDetailDataSource>(
+      () => TaskDetailRemoteDateSource(),
+    );
   }
 
   locator.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(remoteSource: locator<AuthSource>()),
+    () => AuthRepositoryImpl(source: locator<AuthSource>()),
   );
 
   locator.registerLazySingleton<HomeRepository>(
-    () => HomeRepositoryImpl(remoteSource: locator<HomeSource>()),
+    () => HomeRepositoryImpl(source: locator<HomeSource>()),
+  );
+
+  locator.registerLazySingleton<TaskDetailRepository>(
+    () => TaskDetailRepositoryImpl(source: locator<TaskDetailDataSource>()),
   );
 }

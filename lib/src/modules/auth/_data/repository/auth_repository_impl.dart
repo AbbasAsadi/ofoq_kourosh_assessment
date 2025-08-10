@@ -10,13 +10,13 @@ import 'package:ofoq_kourosh_assessment/src/modules/auth/_data/entity/user_respo
 import 'auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthSource remoteSource;
+  final AuthSource source;
 
-  AuthRepositoryImpl({required this.remoteSource});
+  AuthRepositoryImpl({required this.source});
 
   @override
   Future<ApiResponseWrapper<UserResponse?>> login(LoginParams params) async {
-    final response = await remoteSource.login(params);
+    final response = await source.login(params);
     if (response.status == ApiRequestStatus.success &&
         ((response.data as List?)?.isNotEmpty ?? false)) {
       final data = UserResponse.fromJson(response.data[0]);
@@ -36,7 +36,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<ApiResponseWrapper<bool>> signup(SignupParams params) async {
-    final response = await remoteSource.signup(params);
+    final response = await source.signup(params);
     return ApiResponseWrapper(
       status: response.status,
       error: response.error,

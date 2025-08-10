@@ -5,7 +5,7 @@ class TaskModel {
   String? taskName;
   String? taskDesc;
   bool? isDone;
-  int? userId;
+  String? userId;
   String? lat;
   String? lng;
   String? createdAt;
@@ -26,7 +26,7 @@ class TaskModel {
     taskName: json['TaskName'],
     taskDesc: json['TaskDesc'],
     isDone: json['IsDone'],
-    userId: json['UserId'],
+    userId: json['UserId'].toString(),
     lat: json['lat'],
     lng: json['lng'],
     createdAt: (json['created_at'] as String?)?.toJalaliDateTime,

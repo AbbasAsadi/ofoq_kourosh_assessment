@@ -6,6 +6,7 @@ import 'package:ofoq_kourosh_assessment/src/components/submit_button.dart';
 import 'package:ofoq_kourosh_assessment/src/helper/context_extensions.dart';
 import 'package:ofoq_kourosh_assessment/src/helper/error_handler.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_bloc/home_bloc.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/home/_bloc/home_event.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_bloc/home_state.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_components/task_list_item.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_routes/task_detail_route.dart';
@@ -74,8 +75,11 @@ class _HomePage extends StatelessWidget with ErrorHandler {
           Padding(
             padding: const EdgeInsets.all(24.0),
             child: SubmitButton(
-              onTap: () {
-                TaskDetailRoutes.toTaskDetailPage(context);
+              onTap: () async {
+                var result = await TaskDetailRoutes.toTaskDetailPage(context);
+                if (result == true) {
+                  context.read<HomeBloc>().add(FetchTaskListEvent());
+                }
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -87,7 +91,7 @@ class _HomePage extends StatelessWidget with ErrorHandler {
                     ),
                   ),
                   Gap(8),
-                  Icon(Icons.add_rounded, color: AppColors.white,),
+                  Icon(Icons.add_rounded, color: AppColors.white),
                 ],
               ),
             ),
