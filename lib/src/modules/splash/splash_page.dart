@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ofoq_kourosh_assessment/gen/assets.gen.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/auth/_routes/auth_routes.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/home/_routes/home_routes.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/splash/_bloc/splash_cubit.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/splash/_bloc/splash_state.dart';
 
@@ -24,7 +25,9 @@ class _SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<SplashCubit, SplashState>(
       listener: (context, state) {
-        if (state is SplashFinished) {
+        if (state is SplashFinishedAndGoToHome) {
+          HomeRoutes.toHomePage(context);
+        } else {
           AuthRoutes.toAuthPage(context);
         }
       },

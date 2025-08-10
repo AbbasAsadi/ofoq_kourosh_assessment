@@ -1,3 +1,4 @@
+import 'package:ofoq_kourosh_assessment/locator.dart';
 import 'package:ofoq_kourosh_assessment/src/core/api/core_api.dart';
 import 'package:ofoq_kourosh_assessment/src/core/api/dio_method.dart';
 import 'package:ofoq_kourosh_assessment/src/core/models/api_response_wrapper.dart';
@@ -6,7 +7,7 @@ import 'package:ofoq_kourosh_assessment/src/modules/auth/_data/entity/login_para
 import 'package:ofoq_kourosh_assessment/src/modules/auth/_data/entity/signup_params.dart';
 
 class AuthRemoteSource extends AuthSource {
-  final _api = CoreApi();
+  final _api = locator<CoreApi>();
 
   @override
   Future<ApiResponseWrapper> login(LoginParams params) {
@@ -20,6 +21,9 @@ class AuthRemoteSource extends AuthSource {
   @override
   Future<ApiResponseWrapper> signup(SignupParams params) {
     return _api.call<String>(
-        'User', method: ApiMethod.post, body: params.toJson());
+      'User',
+      method: ApiMethod.post,
+      body: params.toJson(),
+    );
   }
 }

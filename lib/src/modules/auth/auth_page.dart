@@ -11,6 +11,7 @@ import 'package:ofoq_kourosh_assessment/src/helper/error_handler.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/auth/_bloc/auth_bloc.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/auth/_bloc/auth_event.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/auth/_bloc/auth_state.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/home/_routes/home_routes.dart';
 import 'package:ofoq_kourosh_assessment/src/theme/app_colors.dart';
 
 class AuthPage extends StatelessWidget {
@@ -60,6 +61,7 @@ class _AuthPageState extends State<_AuthPage> with ErrorHandler {
             });
           } else {
             showSuccessMessage(context, 'خوش آمدید');
+            HomeRoutes.toHomePage(context);
           }
         } else if (state is AuthFailure) {
           showError(context: context, message: state.error);

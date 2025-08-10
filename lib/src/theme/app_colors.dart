@@ -9,7 +9,9 @@ mixin AppColors {
   static const lightRed = Color(0xFFFFE2E5);
   static const lightGreen = Color(0xFFE7F4E8);
   static const lightOrange = Color(0xFFFFF4E4);
+  static const blue = Color(0xFF0049E8);
 
+  static const gray5 = Color(0xFF636366);
   static const gray10 = Color(0xFF3A3B3E);
 
   static const border = Color(0xffE8ECF4);

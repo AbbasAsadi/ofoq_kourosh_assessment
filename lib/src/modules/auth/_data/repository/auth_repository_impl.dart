@@ -21,8 +21,9 @@ class AuthRepositoryImpl implements AuthRepository {
         ((response.data as List?)?.isNotEmpty ?? false)) {
       final data = UserResponse.fromJson(response.data[0]);
 
-      /// save token to {SecureStorage}
+      /// save token and userID to {SecureStorage}
       locator<SecureStorage>().setAccessToken(data.token);
+      locator<SecureStorage>().setUserID(data.id.toString());
 
       return ApiResponseWrapper.success(data);
     }

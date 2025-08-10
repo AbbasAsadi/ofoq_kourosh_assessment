@@ -9,6 +9,23 @@ class SecureStorage {
   final FlutterSecureStorage _storage = locator();
 
   String? _accessToken;
+  String? _userID;
+
+
+  Future<String?> get userID async {
+    if (_userID != null) return _userID;
+    return (_userID = await _storage.read(
+      key: SecureStorageKeys.userIDKey,
+    ));
+  }
+
+  Future<void> setUserID(String userID) async {
+    _userID = userID;
+    return await _storage.write(
+      key: SecureStorageKeys.userIDKey,
+      value: userID,
+    );
+  }
 
   Future<String?> get accessToken async {
     if (_accessToken != null) return _accessToken;
@@ -25,12 +42,9 @@ class SecureStorage {
     );
   }
 
-  bool hasToken() {
-    return _accessToken != null;
-  }
-
   Future<void> logout() async {
     _accessToken = null;
+    _userID = null;
     await _storage.deleteAll();
   }
 }

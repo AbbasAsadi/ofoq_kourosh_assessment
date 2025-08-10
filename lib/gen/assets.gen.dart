@@ -14,6 +14,12 @@ import 'package:flutter/widgets.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/delete.svg
+  String get delete => 'assets/icons/delete.svg';
+
+  /// File path: assets/icons/edit.svg
+  String get edit => 'assets/icons/edit.svg';
+
   /// File path: assets/icons/error_info.svg
   String get errorInfo => 'assets/icons/error_info.svg';
 
@@ -22,6 +28,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/info_icon.svg
   String get infoIcon => 'assets/icons/info_icon.svg';
+
+  /// File path: assets/icons/location.svg
+  String get location => 'assets/icons/location.svg';
 
   /// File path: assets/icons/lock.svg
   String get lock => 'assets/icons/lock.svg';
@@ -37,9 +46,12 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<String> get values => [
+    delete,
+    edit,
     errorInfo,
     greenTick,
     infoIcon,
+    location,
     lock,
     login,
     profile,
