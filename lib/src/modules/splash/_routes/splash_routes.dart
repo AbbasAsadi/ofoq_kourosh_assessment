@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' show BuildContext;
 import 'package:go_router/go_router.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/splash/splash_page.dart';
 

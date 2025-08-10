@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:ofoq_kourosh_assessment/gen/assets.gen.dart';
 import 'package:ofoq_kourosh_assessment/src/components/app_outlined_button.dart';
 import 'package:ofoq_kourosh_assessment/src/components/submit_button.dart';
@@ -10,6 +11,7 @@ import 'package:ofoq_kourosh_assessment/src/core/models/task_model.dart';
 import 'package:ofoq_kourosh_assessment/src/helper/context_extensions.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_bloc/home_bloc.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_bloc/home_event.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/map/_routes/map_routes.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_routes/task_detail_route.dart';
 import 'package:ofoq_kourosh_assessment/src/theme/app_colors.dart';
 
@@ -86,7 +88,11 @@ class TaskListItem extends StatelessWidget {
               iconPath: Assets.icons.location,
               enableColorButton: AppColors.blue,
               onTap: () {
-                //TODO SHOULD GO TO Map PAGE
+                double? lat = double.tryParse(task.lat ?? '');
+                double? lng = double.tryParse(task.lng ?? '');
+                if (lat != null && lng != null) {
+                  MapRoutes.toMapPage(context, LatLng(lat, lng));
+                }
               },
             ),
             Gap(12),

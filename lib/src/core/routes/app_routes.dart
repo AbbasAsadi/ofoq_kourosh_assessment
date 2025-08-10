@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/auth/_routes/auth_routes.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/home/_routes/home_routes.dart';
+import 'package:ofoq_kourosh_assessment/src/modules/map/_routes/map_routes.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/splash/_routes/splash_routes.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_routes/task_detail_route.dart';
 
@@ -19,6 +20,7 @@ class AppRoutes {
         AuthRoutes.route,
         HomeRoutes.route,
         TaskDetailRoutes.route,
+        MapRoutes.route,
       ],
     );
   }
