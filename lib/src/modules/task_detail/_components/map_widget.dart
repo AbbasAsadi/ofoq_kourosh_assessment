@@ -27,7 +27,6 @@ class _MapWidgetState extends State<MapWidget> {
     return FlutterMap(
       options: MapOptions(
         onLongPress: (tapPosition, point) {
-          print(point.toString());
           setState(() {
             selectedPoint = point;
           });

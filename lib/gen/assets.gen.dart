@@ -23,6 +23,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/error_info.svg
   String get errorInfo => 'assets/icons/error_info.svg';
 
+  /// File path: assets/icons/gps.svg
+  String get gps => 'assets/icons/gps.svg';
+
   /// File path: assets/icons/green_tick.svg
   String get greenTick => 'assets/icons/green_tick.svg';
 
@@ -52,6 +55,7 @@ class $AssetsIconsGen {
     delete,
     edit,
     errorInfo,
+    gps,
     greenTick,
     infoIcon,
     location,
