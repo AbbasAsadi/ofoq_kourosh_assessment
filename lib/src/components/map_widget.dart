@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:ofoq_kourosh_assessment/gen/assets.gen.dart';
 import 'package:ofoq_kourosh_assessment/src/core/constants/api_constants.dart';
+import 'package:ofoq_kourosh_assessment/src/core/global_blocs/location/location_cubit.dart';
+import 'package:ofoq_kourosh_assessment/src/core/global_blocs/location/location_state.dart';
 import 'package:ofoq_kourosh_assessment/src/helper/error_handler.dart';
-import 'package:ofoq_kourosh_assessment/src/helper/location_helper.dart';
 import 'package:ofoq_kourosh_assessment/src/theme/app_colors.dart';
 
 class MapWidget extends StatefulWidget {
@@ -26,154 +27,137 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> with ErrorHandler {
-  final MapController mapController = MapController();
-
-  ValueNotifier<bool> canGetLocation = ValueNotifier(false);
-  ValueNotifier<bool> inLoadingGetUserLocation = ValueNotifier(false);
-
-  LatLng? userLocation;
-  LatLng? selectedPoint;
+  final MapController _mapController = MapController();
 
   @override
   void dispose() {
-    mapController.dispose();
-    inLoadingGetUserLocation.dispose();
-    canGetLocation.dispose();
+    _mapController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      mapController: mapController,
-      options: MapOptions(
-        onLongPress: widget.onSelectNewLocation == null
-            ? null
-            : (tapPosition, point) {
-                setState(() {
-                  selectedPoint = point;
+    return BlocProvider(
+      create: (_) => LocationCubit(initialMarker: widget.initialPoint),
+      child: BlocListener<LocationCubit, LocationState>(
+        listenWhen: (prev, curr) =>
+            prev.error != curr.error && curr.error != null,
+        listener: (context, state) {
+          if (state.error != null) {
+            showError(context: context, message: state.error!);
+            context.read<LocationCubit>().clearError();
+          }
+        },
+        child: BlocBuilder<LocationCubit, LocationState>(
+          builder: (context, state) {
+            // اگر لوکیشن جدیدی رسید و مرکز نقشه جای دیگه‌ایه، حرکت کنیم
+            if (state.userLocation != null &&
+                _mapController.camera.center != state.userLocation) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                // کمی تاخیر مثل کد قبلیت
+                Future.delayed(const Duration(seconds: 1), () {
+                  _mapController.move(state.userLocation!, 16);
                 });
-                widget.onSelectNewLocation!(point);
-              },
-        initialCenter: widget.initialPoint ?? LatLng(35.731072, 51.419256),
-        initialZoom: 16,
-      ),
-      children: [
-        TileLayer(urlTemplate: ApiConstants.mapURL),
-        if (widget.initialPoint != null || selectedPoint != null)
-          MarkerLayer(
-            markers: [
-              Marker(
-                rotate: false,
-                point: selectedPoint ?? widget.initialPoint!,
-                height: 50,
-                child: SvgPicture.asset(Assets.icons.mapMarker),
-              ),
-            ],
-          ),
-        Positioned(
-          bottom: widget.fetchLocationButtonBottomPadding,
-          right: 24,
-          child: ValueListenableBuilder<bool>(
-            valueListenable: inLoadingGetUserLocation,
-            builder: (context, inLoading, child) {
-              return Material(
-                color: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(
-                    color: AppColors.blueSuccessWarningErrorINFO,
-                  ),
-                ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: inLoading
-                      ? null
-                      : () async {
-                          String? message =
-                              await LocationHelper.checkPermission();
-                          if (message == null) {
-                            canGetLocation.value = true;
-                            inLoadingGetUserLocation.value = true;
+              });
+            }
 
-                            if (userLocation != null &&
-                                mapController.camera.center != userLocation) {
-                              mapController.move(userLocation!, 16);
-                              inLoadingGetUserLocation.value = false;
-                            }
-                          } else {
-                            showError(context: context, message: message);
-                          }
-                        },
-                  child: Container(
-                    width: 48,
-                    height: 48,
-                    padding: const EdgeInsets.all(12.0),
-                    child: (inLoading)
-                        ? CircularProgressIndicator(
+            return FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter:
+                    widget.initialPoint ?? const LatLng(35.731072, 51.419256),
+                initialZoom: 16,
+                onLongPress: widget.onSelectNewLocation == null
+                    ? null
+                    : (tapPosition, point) {
+                        context.read<LocationCubit>().selectMarker(point);
+                        widget.onSelectNewLocation?.call(point);
+                      },
+              ),
+              children: [
+                TileLayer(urlTemplate: ApiConstants.mapURL),
+
+                // مارکر انتخابی (یا initial)
+                if (state.markerPoint != null)
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        point: state.markerPoint!,
+                        height: 50,
+                        child: SvgPicture.asset(Assets.icons.mapMarker),
+                      ),
+                    ],
+                  ),
+
+                // لایه‌ی نشان‌دهنده‌ی لوکیشن کاربر و accuracy
+                if (state.userLocation != null)
+                  CircleLayer(
+                    circles: [
+                      CircleMarker(
+                        point: state.userLocation!,
+                        radius: (state.accuracy ?? 1),
+                        color: Colors.lightBlueAccent.withValues(alpha: .3),
+                      ),
+                      CircleMarker(
+                        point: state.userLocation!,
+                        radius: 5,
+                        color: Colors.blue,
+                      ),
+                    ],
+                  ),
+
+                // دکمه‌ی GPS (گرفتن لوکیشن کاربر)
+                Positioned(
+                  bottom: widget.fetchLocationButtonBottomPadding,
+                  right: 24,
+                  child: Material(
+                    color: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color: AppColors.blueSuccessWarningErrorINFO,
+                      ),
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: state.loading
+                          ? null
+                          : () async {
+                              // شروع/ادامه‌ی دریافت لوکیشن
+                              await context
+                                  .read<LocationCubit>()
+                                  .startTracking();
+
+                              // اگر همین الان لوکیشن داریم، سریع مرکز نقشه رو ببر همون‌جا
+                        final userLoc = context
+                            .read<LocationCubit>()
+                            .state
+                            .userLocation;
+                        if (userLoc != null &&
+                            _mapController.camera.center != userLoc) {
+                          _mapController.move(userLoc, 16);
+                        }
+                      },
+                      child: SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: Center(
+                          child: state.loading
+                              ? CircularProgressIndicator(
+                            strokeWidth: 2,
                             color: AppColors.blueSuccessWarningErrorINFO,
                           )
-                        : SvgPicture.asset(Assets.icons.gps),
+                              : SvgPicture.asset(Assets.icons.gps),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              );
-            },
-          ),
-        ),
-
-        ValueListenableBuilder<bool>(
-          valueListenable: canGetLocation,
-          builder: (context, value, child) {
-            if (!value) return SizedBox();
-
-            return StreamBuilder<Position>(
-              stream: Geolocator.getPositionStream(
-                locationSettings: LocationSettings(
-                  accuracy: LocationAccuracy.high,
-                  distanceFilter: 100,
-                ),
-              ),
-              builder: (context, data) {
-                switch (data.connectionState) {
-                  case ConnectionState.none:
-                  case ConnectionState.waiting:
-                    return SizedBox();
-                  case ConnectionState.active:
-                  case ConnectionState.done:
-                    if (data.hasData) {
-                      userLocation = LatLng(
-                        data.data!.latitude,
-                        data.data!.longitude,
-                      );
-                      if (userLocation != null &&
-                          mapController.camera.center != userLocation) {
-                        Future.delayed(Duration(seconds: 1), () {
-                          inLoadingGetUserLocation.value = false;
-                          mapController.move(userLocation!, 16);
-                        });
-                      }
-                      return CircleLayer(
-                        circles: [
-                          CircleMarker(
-                            point: userLocation!,
-                            radius: (data.data?.accuracy ?? 1),
-                            color: Colors.lightBlueAccent.withValues(alpha: .3),
-                          ),
-                          CircleMarker(
-                            point: userLocation!,
-                            radius: 5,
-                            color: Colors.blue,
-                          ),
-                        ],
-                      );
-                    }
-                    return SizedBox();
-                }
-              },
+              ],
             );
           },
         ),
-      ],
+      ),
     );
   }
 }
