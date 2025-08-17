@@ -10,9 +10,16 @@ import 'package:ofoq_kourosh_assessment/src/helper/location_helper.dart';
 import 'package:ofoq_kourosh_assessment/src/theme/app_colors.dart';
 
 class MapWidget extends StatefulWidget {
-  const MapWidget({super.key, required this.initialPoint});
+  const MapWidget({
+    super.key,
+    required this.initialPoint,
+    this.onSelectNewLocation,
+    this.fetchLocationButtonBottomPadding = 24,
+  });
 
-  final LatLng initialPoint;
+  final LatLng? initialPoint;
+  final ValueSetter<LatLng>? onSelectNewLocation;
+  final double fetchLocationButtonBottomPadding;
 
   @override
   State<MapWidget> createState() => _MapWidgetState();
@@ -20,14 +27,18 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> with ErrorHandler {
   final MapController mapController = MapController();
-  LatLng? userLocation;
+
   ValueNotifier<bool> canGetLocation = ValueNotifier(false);
   ValueNotifier<bool> inLoadingGetUserLocation = ValueNotifier(false);
+
+  LatLng? userLocation;
+  LatLng? selectedPoint;
 
   @override
   void dispose() {
     mapController.dispose();
     inLoadingGetUserLocation.dispose();
+    canGetLocation.dispose();
     super.dispose();
   }
 
@@ -35,21 +46,33 @@ class _MapWidgetState extends State<MapWidget> with ErrorHandler {
   Widget build(BuildContext context) {
     return FlutterMap(
       mapController: mapController,
-      options: MapOptions(initialCenter: widget.initialPoint, initialZoom: 16),
+      options: MapOptions(
+        onLongPress: widget.onSelectNewLocation == null
+            ? null
+            : (tapPosition, point) {
+                setState(() {
+                  selectedPoint = point;
+                });
+                widget.onSelectNewLocation!(point);
+              },
+        initialCenter: widget.initialPoint ?? LatLng(35.731072, 51.419256),
+        initialZoom: 16,
+      ),
       children: [
         TileLayer(urlTemplate: ApiConstants.mapURL),
-        MarkerLayer(
-          markers: [
-            Marker(
-              rotate: false,
-              point: widget.initialPoint,
-              height: 50,
-              child: SvgPicture.asset(Assets.icons.mapMarker),
-            ),
-          ],
-        ),
+        if (widget.initialPoint != null || selectedPoint != null)
+          MarkerLayer(
+            markers: [
+              Marker(
+                rotate: false,
+                point: selectedPoint ?? widget.initialPoint!,
+                height: 50,
+                child: SvgPicture.asset(Assets.icons.mapMarker),
+              ),
+            ],
+          ),
         Positioned(
-          bottom: 24,
+          bottom: widget.fetchLocationButtonBottomPadding,
           right: 24,
           child: ValueListenableBuilder<bool>(
             valueListenable: inLoadingGetUserLocation,

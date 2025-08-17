@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:ofoq_kourosh_assessment/gen/assets.gen.dart';
 import 'package:ofoq_kourosh_assessment/locator.dart';
 import 'package:ofoq_kourosh_assessment/src/components/app_text_field.dart';
+import 'package:ofoq_kourosh_assessment/src/components/map_widget.dart';
 import 'package:ofoq_kourosh_assessment/src/components/submit_button.dart';
 import 'package:ofoq_kourosh_assessment/src/core/models/task_model.dart';
 import 'package:ofoq_kourosh_assessment/src/core/secure_storage.dart';
@@ -16,7 +17,6 @@ import 'package:ofoq_kourosh_assessment/src/helper/error_handler.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_bloc/task_detail_bloc.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_bloc/task_detail_event.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_bloc/task_detail_state.dart';
-import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_components/map_widget.dart';
 import 'package:ofoq_kourosh_assessment/src/modules/task_detail/_data/entity/task_params.dart';
 
 class TaskDetailPage extends StatelessWidget {
@@ -132,6 +132,7 @@ class _TaskDetailPageState extends State<_TaskDetailPage> with ErrorHandler {
                       double.tryParse(widget.task?.lat ?? '') ?? 35.731072,
                       double.tryParse(widget.task?.lng ?? '') ?? 51.419256,
                     ),
+                    fetchLocationButtonBottomPadding: 90,
                     onSelectNewLocation: (value) {
                       selectedPointer = value;
                     },
